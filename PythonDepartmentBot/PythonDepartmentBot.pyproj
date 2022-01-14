@@ -42,6 +42,7 @@
     <Content Include="links.json">
       <Publish>True</Publish>
     </Content>
+    <Content Include="requirements.txt" />
     <Content Include="schedule.json">
       <Publish>True</Publish>
     </Content>
