@@ -14,7 +14,7 @@ using System.Linq;
 /// <summary>
 /// в основном все украдено отсюда https://github.com/DSharpPlus/Example-Bots.git
 /// </summary>
-namespace GIiIBDepartmentBot
+namespace SharpDepartmentBot
 {
     public struct Configuration
     {

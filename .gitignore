@@ -203,7 +203,8 @@ csx/
 # Microsoft Azure Emulator
 ecf/
 rcf/
-
+# Python virtual environment
+venv/
 # Windows Store app package directories and files
 AppPackages/
 BundleArtifacts/
