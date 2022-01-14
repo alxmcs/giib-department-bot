@@ -9,7 +9,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using Newtonsoft.Json;
 
-namespace GIiIBDepartmentBot
+namespace SharpDepartmentBot
 {
     public class BotCommands : BaseCommandModule
     {
@@ -40,7 +40,7 @@ namespace GIiIBDepartmentBot
             var roles = new List<DiscordRole>();
             roles.AddRange(ctx.Member.Roles.ToArray());
             for (int i=0; i< roles.Count; i++)
-                if(roles[i].Name !="Студент")
+                if(roles[i].Name !="Студент" && roles[i].Name != "@everyone")
                     await ctx.Member.RevokeRoleAsync(roles[i]);
             await ctx.Member.GrantRoleAsync(role);
             await ctx.RespondAsync($"Теперь ты в группе {role.Name}!");
