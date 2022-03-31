@@ -42,8 +42,7 @@ def get_role(ctx):
         return nick_role
     if name_role is not None:
         return name_role
-    else:
-        return None
+    return None
 
 async def set_role(ctx, role):
     for r in ctx.author.roles:
