@@ -40,7 +40,7 @@ def get_role(ctx):
     nick_role = discord.utils.get(ctx.guild.roles,name=nick_group)
     if nick_role is not None:
         return nick_role
-    elif name_role is not None:
+    if name_role is not None:
         return name_role
     else:
         return None
@@ -103,7 +103,7 @@ async def grant_role(ctx):
 
 @bot.command(name = 'schedule', description = 'Выдает ссылку на расписание группы студента в соответствии с его группой')
 async def send_schedule(ctx):
-    schedule = get_schedule();
+    schedule = get_schedule()
     role = get_role(ctx)
     if role is None:
         await ctx.send('Назови себя нормально! Никнейм должен быть вида *ФИО НомерГруппы*')
