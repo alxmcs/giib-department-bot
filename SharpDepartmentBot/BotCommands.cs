@@ -46,8 +46,8 @@ namespace SharpDepartmentBot
         }
         #endregion
 
-        #region !giiib schedule
-        [Command("schedule"), Description("Выдает ссылку на расписание группы студента в соответствии с его группой")]
+            #region !giiib schedule
+            [Command("schedule"), Description("Выдает ссылку на расписание группы студента в соответствии с его группой")]
         public async Task ShowSchedule(CommandContext ctx)
         {
             var role = GetRole(ctx);

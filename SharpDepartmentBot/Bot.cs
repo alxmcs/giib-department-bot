@@ -27,10 +27,10 @@ namespace SharpDepartmentBot
 
     public class Bot
     {
-        public readonly EventId BotEventId = new EventId(359, "GISandITSecDepartmentBot");
+        public readonly EventId BotEventId = new(359, "GISandITSecDepartmentBot");
         public DiscordClient Client { get; set; }
         public CommandsNextExtension Commands { get; set; }
-        public static void Main(string[] args)
+        public static void Main()
         {
             var prog = new Bot();
             prog.RunBotAsync().GetAwaiter().GetResult();
@@ -70,10 +70,10 @@ namespace SharpDepartmentBot
                 EnableDms = false,
                 EnableMentionPrefix = true
             };
-            this.Commands = this.Client.UseCommandsNext(commandsConfig);
-            this.Commands.CommandExecuted += this.Commands_CommandExecuted;
-            this.Commands.CommandErrored += this.Commands_CommandErrored;
-            this.Commands.RegisterCommands<BotCommands>();
+            Commands = Client.UseCommandsNext(commandsConfig);
+            Commands.CommandExecuted += Commands_CommandExecuted;
+            Commands.CommandErrored += Commands_CommandErrored;
+            Commands.RegisterCommands<BotCommands>();
             #endregion
             #endregion
             await this.Client.ConnectAsync();
@@ -108,7 +108,7 @@ namespace SharpDepartmentBot
         {
             e.Context.Client.Logger.LogError(BotEventId, $"{e.Context.User.Username} tried executing '{e.Command?.QualifiedName ?? "<unknown command>"}' but it errored: {e.Exception.GetType()}: {e.Exception.Message ?? "<no message>"}", DateTime.Now);
 
-            if (e.Exception is ChecksFailedException ex)
+            if (e.Exception is ChecksFailedException)
             {
                 var emoji = DiscordEmoji.FromName(e.Context.Client, ":no_entry:");
                 var embed = new DiscordEmbedBuilder
