@@ -46,6 +46,38 @@ namespace SharpDepartmentBot
         }
         #endregion
 
+        #region !giiib graduate
+        [Command("graduate"), Description("Присваивает студенту последнего курса роль выпускника")]
+        public async Task GrantGraduate(CommandContext ctx)
+        {
+            if (CheckGraduate(ctx))
+                await ApplyGraduateChanges(ctx);
+            else
+                await ctx.RespondAsync("Ты не на последнем курсе!");
+        }
+        private async Task ApplyGraduateChanges(CommandContext ctx)
+        {
+            var role = ctx.Guild.Roles.FirstOrDefault(x => x.Value.Name == "Выпускник").Value;
+            var roles = new List<DiscordRole>();
+            roles.AddRange(ctx.Member.Roles.ToArray());
+            for (int i = 0; i < roles.Count; i++)
+                if (roles[i].Name != "@everyone")
+                    await ctx.Member.RevokeRoleAsync(roles[i]);
+            await ctx.Member.GrantRoleAsync(role);
+            await ctx.RespondAsync($"Теперь ты {role.Name}!");
+        }
+        /// <summary>
+        /// чекает, на последнем курсе ли студент
+        /// </summary>
+        /// <remarks>to do: на данный момент мне в падлу вменяемым образом передавать сюда откуда бы то ни было параметры</remarks>
+        private bool CheckGraduate(CommandContext ctx)
+        {
+            var gradGroups = new List<string>() { "6511", "6512", "6513", "6514" };
+            var roles = ctx.Member.Roles;
+            return roles.Select(x => x.Name).Intersect(gradGroups).Any();
+        }
+        #endregion
+
         #region !giiib schedule
         [Command("schedule"), Description("Выдает ссылку на расписание группы студента в соответствии с его группой")]
         public async Task ShowSchedule(CommandContext ctx)
