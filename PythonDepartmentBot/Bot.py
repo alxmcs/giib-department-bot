@@ -5,13 +5,14 @@ import os
 import platform
 import sys
 import discord
-from datetime import datetime
 from discord.ext.commands import Bot
 import discord.ext.commands 
+import logging
 
 def get_config():
     if not os.path.isfile("config.json"):
-        sys.exit("'config.json' not found! Please add it and try again.")
+        logging.error("'config.json' not found! Please add it and try again.")
+        sys.exit()
     else:
         with open("config.json", encoding='cp1251') as file:
             config = json.load(file)
@@ -19,7 +20,7 @@ def get_config():
 
 def get_links():
     if not os.path.isfile("links.json"):
-         print(f"{datetime.now()}: 'links.json' not found!")
+         logging.info("'links.json' not found!")
     else:
         with open("links.json", encoding='cp1251') as file:
             links = json.load(file)
@@ -27,7 +28,7 @@ def get_links():
 
 def get_schedule():
     if not os.path.isfile("schedule.json"):
-        print(f"{datetime.now()}: 'schedule.json' not found!")
+        logging.info("'schedule.json' not found!")
     else:
         with open("schedule.json", encoding='cp1251') as file:
             schedule = json.load(file)
@@ -58,10 +59,10 @@ async def on_ready():
     """
     The code in this even is executed when the bot is ready
     """
-    print(f"{datetime.now()}: Logged in as {bot.user.name}")
-    print(f"{datetime.now()}: discord API version: {discord.__version__}")
-    print(f"{datetime.now()}: Python version: {platform.python_version()}")
-    print(f"{datetime.now()}: Running on: {platform.system()} {platform.release()} ({os.name})")
+    logging.info("Logged in as {bot.user.name}")
+    logging.info("discord API version: {discord.__version__}")
+    logging.info("Python version: {platform.python_version()}")
+    logging.info("Running on: {platform.system()} {platform.release()} ({os.name})")
 @bot.event
 async def on_command_completion(context):
         """
@@ -71,7 +72,7 @@ async def on_command_completion(context):
         full_command_name = context.command.qualified_name
         split = full_command_name.split(" ")
         executed_command = str(split[0])
-        print(f"{datetime.now()}: Executed {executed_command} command in {context.guild.name} (ID: {context.message.guild.id}) by {context.message.author} (ID: {context.message.author.id})")
+        logging.info(f"Executed {executed_command} command in {context.guild.name} (ID: {context.message.guild.id}) by {context.message.author} (ID: {context.message.author.id})")
 @bot.event
 async def on_command_error(context, error):
         """
@@ -82,13 +83,13 @@ async def on_command_error(context, error):
         full_command_name = context.command.qualified_name
         split = full_command_name.split(" ")
         executed_command = str(split[0])
-        print(f"{datetime.now()}: Tried executing {executed_command} command in {context.guild.name} (ID: {context.message.guild.id}) by {context.message.author} (ID: {context.message.author.id}) but it errored: {error}")
+        logging.info(f"Tried executing {executed_command} command in {context.guild.name} (ID: {context.message.guild.id}) by {context.message.author} (ID: {context.message.author.id}) but it errored: {error}")
 @bot.event
 async def on_guild_available(guild):
         """
         The code in this event is executed every time a guild becomes avaliable
         """
-        print(f"{datetime.now()}: Guild available: {guild.name}")
+        logging.info(f"Guild available: {guild.name}")
 
 
 @bot.command(name = 'role', description = 'Присваивает роль студенту в соответствии с его никнеймом')
