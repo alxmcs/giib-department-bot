@@ -9,6 +9,7 @@ from discord.ext.commands import Bot
 import discord.ext.commands 
 import logging
 
+
 def get_config():
     if not os.path.isfile("config.json"):
         logging.error("'config.json' not found! Please add it and try again.")
@@ -18,6 +19,7 @@ def get_config():
             config = json.load(file)
         return config
 
+
 def get_links():
     if not os.path.isfile("links.json"):
          logging.info("'links.json' not found!")
@@ -26,6 +28,7 @@ def get_links():
             links = json.load(file)
         return links
 
+
 def get_schedule():
     if not os.path.isfile("schedule.json"):
         logging.info("'schedule.json' not found!")
@@ -33,6 +36,7 @@ def get_schedule():
         with open("schedule.json", encoding='cp1251') as file:
             schedule = json.load(file)
         return schedule
+
 
 def get_role(ctx):
     if ctx.author.name:
@@ -45,11 +49,13 @@ def get_role(ctx):
         return nick_role       
     return None
 
+
 async def set_role(ctx, role):
     for r in ctx.author.roles:
         if r.name != "Студент" and r.name != "@everyone":
             await ctx.author.remove_roles(r)
     await ctx.author.add_roles(role)
+
 
 config = get_config()
 bot = Bot(config["prefix"]+" ", intents=discord.Intents.all()) # почему в C# после префикса при парсинге команды подразумевается пробел между префиксом и именем команды, а тут нет - в душе не ебу
