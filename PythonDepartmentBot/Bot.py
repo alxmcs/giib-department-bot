@@ -34,14 +34,14 @@ def get_schedule():
         return schedule
 
 def get_role(ctx):
-    name_group = ctx.author.name.split()[-1]
-    nick_group = ctx.author.nick.split()[-1]
-    name_role = discord.utils.get(ctx.guild.roles,name=name_group)
-    nick_role = discord.utils.get(ctx.guild.roles,name=nick_group)
-    if nick_role is not None:
-        return nick_role
-    if name_role is not None:
+    if ctx.author.name:
+        name_group = ctx.author.name.split()[-1]
+        name_role = discord.utils.get(ctx.guild.roles,name=name_group)
         return name_role
+    if ctx.author.nick:
+        nick_group = ctx.author.nick.split()[-1]
+        nick_role = discord.utils.get(ctx.guild.roles,name=nick_group)
+        return nick_role       
     return None
 
 async def set_role(ctx, role):
