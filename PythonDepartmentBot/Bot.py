@@ -51,7 +51,7 @@ async def set_role(ctx, role):
     await ctx.author.add_roles(role)
 
 config = get_config()
-bot = Bot(config["prefix"]+" ") # почему в C# после префикса при парсинге команды подразумевается пробел между префиксом и именем команды, а тут нет - в душе не ебу
+bot = Bot(config["prefix"]+" ", intents=discord.Intents.all()) # почему в C# после префикса при парсинге команды подразумевается пробел между префиксом и именем команды, а тут нет - в душе не ебу
 
 @bot.event
 async def on_ready():
