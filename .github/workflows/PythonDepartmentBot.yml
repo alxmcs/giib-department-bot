@@ -23,7 +23,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install pytest
-        if [ -f PyhtonDepartmentBot/requirements.txt ]; then pip install -r PyhtonDepartmentBot/requirements.txt; fi
+        if [ -f PythonDepartmentBot/requirements.txt ]; then pip install -r PythonDepartmentBot/requirements.txt; fi
     - name: Run tests
       run: |
         python -m pytest
