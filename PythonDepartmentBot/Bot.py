@@ -103,7 +103,7 @@ async def graduate(ctx):
         await RoleUtils.set_grad_role(ctx, role)
         await ctx.send(f'Теперь {role.name}!')
     else:
-        await ctx.send(f'Ты не на последнем курсе!')
+        await ctx.send('Ты не на последнем курсе!')
 
 if __name__ == "__main__":
     bot.run(data_utils.config["token"])
