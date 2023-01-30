@@ -27,7 +27,7 @@ class DataUtils:
 
     def get_links(self):
         try:
-            result = self._cursor.execute('select "Name", "Url" from "Resources"').fetchall()
+            result = self._cursor.execute('SELECT "Name", "Url" FROM "Resources"').fetchall()
         except sqlite3.Error as err:
             logging.error(f"Exception occurred during get_links: {err}")
             return None
@@ -35,7 +35,7 @@ class DataUtils:
 
     def get_schedule(self):
         try:
-            result = self._cursor.execute('select "Group", "Url" from "Schedule"').fetchall()
+            result = self._cursor.execute('SELECT "Group", "Url" FROM "Schedule"').fetchall()
         except sqlite3.Error as err:
             logging.error(f"Exception occurred during get_schedule: {err}")
             return None
