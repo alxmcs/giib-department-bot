@@ -32,7 +32,7 @@ class DataUtilsTestCase(unittest.TestCase):
         cur = connection.cursor()
         cur.execute('CREATE TABLE "Resources"("Id" INTEGER NOT NULL UNIQUE, "Name" TEXT, "Url" TEXT,PRIMARY KEY("Id" AUTOINCREMENT));')
         cur.execute('CREATE TABLE "Schedule"("Id" INTEGER NOT NULL UNIQUE,"Group" INTEGER,"Url"	TEXT,PRIMARY KEY("Id" AUTOINCREMENT));')
-        cur.execute(f'INSERT INTO "Resources"("Name", "Url") VALUES (\'TestName1\',\'TestUrl1\'),(\'TestName2\',\'TestUrl2\');')
+        cur.execute('INSERT INTO "Resources"("Name", "Url") VALUES (\'TestName1\',\'TestUrl1\'),(\'TestName2\',\'TestUrl2\');')
         cur.execute(f'INSERT INTO "Schedule"("Group", "Url") VALUES (\'1111\',\'TestUrl1\'),(\'1112\',\'TestUrl2\');')
         connection.commit()
         cur.close()
