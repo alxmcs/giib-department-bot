@@ -3,9 +3,9 @@
 import os
 import platform
 import logging
+import discord.ext.commands
 from discord import Intents
 from discord.ext.commands import Bot
-import discord.ext.commands
 from Utils import DataUtils, RoleUtils
 import sys
 
