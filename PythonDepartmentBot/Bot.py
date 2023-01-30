@@ -1,116 +1,82 @@
 # сооружено по документации https://discordpy.readthedocs.io/en/stable/api.html
 
-import json
 import os
 import platform
-import sys
-import discord
-from discord.ext.commands import Bot
-import discord.ext.commands 
 import logging
+from discord import Intents
+from discord.ext.commands import Bot
+import discord.ext.commands
+from Utils import BotUtils
+import sys
 
+GRADUATE_ROLES = ['6511', '6512', '6513', '6514']
 
-def get_config():
-    if not os.path.isfile("config.json"):
-        logging.error("'config.json' not found! Please add it and try again.")
-        sys.exit()
-    else:
-        with open("config.json", encoding='cp1251') as file:
-            config = json.load(file)
-        return config
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+config = BotUtils.get_config()
+bot = Bot(command_prefix=f"{config['prefix']} ", intents=Intents.all())
 
-
-def get_links():
-    if not os.path.isfile("links.json"):
-         logging.info("'links.json' not found!")
-    else:
-        with open("links.json", encoding='cp1251') as file:
-            links = json.load(file)
-        return links
-
-
-def get_schedule():
-    if not os.path.isfile("schedule.json"):
-        logging.info("'schedule.json' not found!")
-    else:
-        with open("schedule.json", encoding='cp1251') as file:
-            schedule = json.load(file)
-        return schedule
-
-
-def get_role(ctx):
-    if ctx.author.name:
-        name_group = ctx.author.name.split()[-1]
-        name_role = discord.utils.get(ctx.guild.roles,name=name_group)
-        return name_role
-    if ctx.author.nick:
-        nick_group = ctx.author.nick.split()[-1]
-        nick_role = discord.utils.get(ctx.guild.roles,name=nick_group)
-        return nick_role       
-    return None
-
-
-async def set_role(ctx, role):
-    for r in ctx.author.roles:
-        if r.name != "Студент" and r.name != "@everyone":
-            await ctx.author.remove_roles(r)
-    await ctx.author.add_roles(role)
-
-
-config = get_config()
-bot = Bot(config["prefix"]+" ", intents=discord.Intents.all()) # почему в C# после префикса при парсинге команды подразумевается пробел между префиксом и именем команды, а тут нет - в душе не ебу
 
 @bot.event
 async def on_ready():
     """
     The code in this even is executed when the bot is ready
     """
-    logging.info("Logged in as {bot.user.name}")
-    logging.info("discord API version: {discord.__version__}")
-    logging.info("Python version: {platform.python_version()}")
-    logging.info("Running on: {platform.system()} {platform.release()} ({os.name})")
+    logging.info(f"Logged in as {bot.user.name}")
+    logging.info(f"discord API version: {discord.__version__}")
+    logging.info(f"Python version: {platform.python_version()}")
+    logging.info(f"Running on: {platform.system()} {platform.release()} ({os.name})")
+    logging.info(f"Running with command prefix: {config['prefix']}")
+
+
 @bot.event
 async def on_command_completion(context):
-        """
-        The code in this event is executed every time a normal command has been *successfully* executed
-        :param context: The context of the command that has been executed.
-        """
-        full_command_name = context.command.qualified_name
-        split = full_command_name.split(" ")
-        executed_command = str(split[0])
-        logging.info(f"Executed {executed_command} command in {context.guild.name} (ID: {context.message.guild.id}) by {context.message.author} (ID: {context.message.author.id})")
+    """
+    The code in this event is executed every time a normal command has been *successfully* executed
+    :param context: The context of the command that has been executed.
+    """
+    full_command_name = context.command.qualified_name
+    split = full_command_name.split(" ")
+    executed_command = str(split[0])
+    logging.info(
+        f"Executed {executed_command} command in {context.guild.name} (ID: {context.message.guild.id}) by {context.message.author} (ID: {context.message.author.id})")
+
+
 @bot.event
 async def on_command_error(context, error):
-        """
-        The code in this event is executed every time a normal valid command catches an error
-        :param context: The normal command that failed executing.
-        :param error: The error that has been faced.
-        """
-        full_command_name = context.command.qualified_name
-        split = full_command_name.split(" ")
-        executed_command = str(split[0])
-        logging.info(f"Tried executing {executed_command} command in {context.guild.name} (ID: {context.message.guild.id}) by {context.message.author} (ID: {context.message.author.id}) but it errored: {error}")
+    """
+    The code in this event is executed every time a normal valid command catches an error
+    :param context: The normal command that failed executing.
+    :param error: The error that has been faced.
+    """
+    full_command_name = context.command.qualified_name
+    split = full_command_name.split(" ")
+    executed_command = str(split[0])
+    logging.info(
+        f"Tried executing {executed_command} command in {context.guild.name} (ID: {context.message.guild.id}) by {context.message.author} (ID: {context.message.author.id}) but it errored: {error}")
+
+
 @bot.event
 async def on_guild_available(guild):
-        """
-        The code in this event is executed every time a guild becomes avaliable
-        """
-        logging.info(f"Guild available: {guild.name}")
+    """
+    The code in this event is executed every time a guild becomes avaliable
+    """
+    logging.info(f"Guild available: {guild.name}")
 
 
-@bot.command(name = 'role', description = 'Присваивает роль студенту в соответствии с его никнеймом')
+@bot.command(name='role', description='Присваивает роль студенту в соответствии с его никнеймом')
 async def grant_role(ctx):
-    role = get_role(ctx)
+    role = BotUtils.get_role(ctx)
     if role is None:
         await ctx.send('Назови себя нормально! Никнейм должен быть вида *ФИО НомерГруппы*')
     else:
-        await set_role(ctx,role)
+        await BotUtils.set_role(ctx, role)
         await ctx.send(f'Теперь ты в группе {role.name}!')
 
-@bot.command(name = 'schedule', description = 'Выдает ссылку на расписание группы студента в соответствии с его группой')
+
+@bot.command(name='schedule', description='Выдает ссылку на расписание группы студента в соответствии с его группой')
 async def send_schedule(ctx):
-    schedule = get_schedule()
-    role = get_role(ctx)
+    schedule = BotUtils.get_schedule()
+    role = BotUtils.get_role(ctx)
     if role is None:
         await ctx.send('Назови себя нормально! Никнейм должен быть вида *ФИО НомерГруппы*')
     else:
@@ -119,12 +85,24 @@ async def send_schedule(ctx):
         else:
             await ctx.send(f'Для группы {role.name} расписания не нашлось')
 
-@bot.command(name = 'links', description = 'Выдает ссылки на информационные ресурсы кафедры')
+
+@bot.command(name='links', description='Выдает ссылки на информационные ресурсы кафедры')
 async def send_links(ctx):
-    links = get_links()
+    links = BotUtils.get_links()
     message = 'Информационные ресурсы кафедры ГИиИБ:\n'
     for key in links.keys():
         message += f"{key}\n<{links[key]}>"
     await ctx.send(message)
+
+
+@bot.command(name='graduate', description='Присваивает студенту последнего курса роль выпускника')
+async def graduate(ctx):
+    role = BotUtils.get_role(ctx)
+    if role and role.name in GRADUATE_ROLES:
+        await BotUtils.set_grad_role(ctx, role)
+        await ctx.send(f'Теперь {role.name}!')
+    else:
+        await ctx.send(f'Ты не на последнем курсе!')
+
 
 bot.run(config["token"])
