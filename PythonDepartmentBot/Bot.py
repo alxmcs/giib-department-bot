@@ -92,7 +92,7 @@ async def send_links(ctx):
     links = data_utils.get_links()
     message = 'Информационные ресурсы кафедры ГИиИБ:\n'
     for key in links.keys():
-        message += f"{key}\n<{links[key]}\n>"
+        message += f"{key}\n<{links[key]}>\n"
     await ctx.send(message)
 
 
