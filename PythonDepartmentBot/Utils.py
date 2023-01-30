@@ -2,38 +2,47 @@ import os
 import sys
 import json
 import logging
+import sqlite3
 import discord.ext.commands
 
 
-class BotUtils:
+class DataUtils:
+    def __init__(self, config_path):
+        self._config = self.get_config(config_path)
+        self._cursor = sqlite3.connect(self._config["database"]).cursor()
+
+    @property
+    def config(self):
+        return self._config
+
     @staticmethod
-    def get_config():
-        if not os.path.isfile("config.json"):
-            logging.error("'config.json' not found! Please add it and try again.")
+    def get_config(config_path):
+        if not os.path.isfile(config_path):
+            logging.error(f"{config_path} not found! Please add it and try again.")
             sys.exit()
         else:
-            with open("config.json", encoding='cp1251') as file:
+            with open(config_path, encoding='cp1251') as file:
                 config = json.load(file)
             return config
 
-    @staticmethod
-    def get_links():
-        if not os.path.isfile("links.json"):
-            logging.info("'links.json' not found!")
-        else:
-            with open("links.json", encoding='cp1251') as file:
-                links = json.load(file)
-            return links
+    def get_links(self):
+        try:
+            result = self._cursor.execute('select "Name", "Url" from "Resources"').fetchall()
+        except sqlite3.Error as err:
+            logging.error(f"Exception occurred during get_links: {err}")
+            return None
+        return {tup[0]: tup[1] for tup in result}
 
-    @staticmethod
-    def get_schedule():
-        if not os.path.isfile("schedule.json"):
-            logging.info("'schedule.json' not found!")
-        else:
-            with open("schedule.json", encoding='cp1251') as file:
-                schedule = json.load(file)
-            return schedule
+    def get_schedule(self):
+        try:
+            result = self._cursor.execute('select "Group", "Url" from "Schedule"').fetchall()
+        except sqlite3.Error as err:
+            logging.error(f"Exception occurred during get_schedule: {err}")
+            return None
+        return {str(tup[0]): tup[1] for tup in result}
 
+
+class RoleUtils:
     @staticmethod
     def get_role(ctx):
         if ctx.author.nick:

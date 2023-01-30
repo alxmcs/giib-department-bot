@@ -1,4 +1,5 @@
 {
   "token": "",
-  "prefix": "!giiib"
+  "prefix": "!giiib",
+  "database": "info.db"
 }
