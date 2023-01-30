@@ -1,6 +1,6 @@
 import unittest
 from enum import Enum
-from Utils import RoleUtils
+from utils import RoleUtils
 from unittest.mock import MagicMock
 
 

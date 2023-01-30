@@ -3,7 +3,7 @@ import json
 import sqlite3
 import tempfile
 import unittest
-from Utils import DataUtils
+from utils import DataUtils
 
 
 class DataUtilsTestCase(unittest.TestCase):

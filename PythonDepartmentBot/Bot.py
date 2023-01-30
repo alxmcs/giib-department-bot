@@ -7,7 +7,7 @@ import logging
 import discord.ext.commands
 from discord import Intents
 from discord.ext.commands import Bot
-from Utils import DataUtils, RoleUtils
+from utils import DataUtils, RoleUtils
 
 CONFIG_PATH = 'config.json'
 GRADUATE_ROLES = ['6511', '6512', '6513', '6514']
