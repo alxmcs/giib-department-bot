@@ -59,7 +59,7 @@ async def on_command_error(context, error):
 @bot.event
 async def on_guild_available(guild):
     """
-    The code in this event is executed every time a guild becomes avaliable
+    The code in this event is executed every time a guild becomes available
     """
     logging.info(f"Guild available: {guild.name}")
 
