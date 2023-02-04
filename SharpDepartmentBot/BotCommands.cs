@@ -17,32 +17,11 @@ namespace SharpDepartmentBot
         [Command("role"), Description("Присваивает роль студенту в соответствии с его никнеймом")]
         public async Task GrantRole(CommandContext ctx)
         {
-            var role = GetRole(ctx);
+            var role = RoleUtils.GetRole(ctx);
             if (role != null)
-                await ApplyRoleChanges(ctx, role);
+                await RoleUtils.ApplyRoleChanges(ctx, role);
             else
                 await ctx.RespondAsync("Назови себя нормально! Никнейм должен быть вида *ФИО НомерГруппы*");
-        }
-        private DiscordRole GetRole(CommandContext ctx)
-        {
-            var roleViaNick = string.IsNullOrEmpty(ctx.Member.Nickname) ? null : ctx.Guild.Roles.FirstOrDefault(x => x.Value.Name == ctx.Member.Nickname.Split(" ").LastOrDefault()).Value;
-            var roleViaDisp = string.IsNullOrEmpty(ctx.Member.DisplayName) ? null : ctx.Guild.Roles.FirstOrDefault(x => x.Value.Name == ctx.Member.DisplayName.Split(" ").LastOrDefault()).Value;
-            if (roleViaNick != null)
-                return roleViaNick;
-            else if (roleViaDisp != null)
-                return roleViaDisp;
-            else
-                return null;
-        }
-        private async Task ApplyRoleChanges(CommandContext ctx, DiscordRole role)
-        {
-            var roles = new List<DiscordRole>();
-            roles.AddRange(ctx.Member.Roles.ToArray());
-            for (int i=0; i< roles.Count; i++)
-                if(roles[i].Name !="Студент" && roles[i].Name != "@everyone")
-                    await ctx.Member.RevokeRoleAsync(roles[i]);
-            await ctx.Member.GrantRoleAsync(role);
-            await ctx.RespondAsync($"Теперь ты в группе {role.Name}!");
         }
         #endregion
 
@@ -50,59 +29,32 @@ namespace SharpDepartmentBot
         [Command("graduate"), Description("Присваивает студенту последнего курса роль выпускника")]
         public async Task GrantGraduate(CommandContext ctx)
         {
-            if (CheckGraduate(ctx))
-                await ApplyGraduateChanges(ctx);
+            if (RoleUtils.CheckGraduate(ctx))
+                await RoleUtils.ApplyGraduateChanges(ctx);
             else
                 await ctx.RespondAsync("Ты не на последнем курсе!");
         }
-        private async Task ApplyGraduateChanges(CommandContext ctx)
-        {
-            var role = ctx.Guild.Roles.FirstOrDefault(x => x.Value.Name == "Выпускник").Value;
-            var roles = new List<DiscordRole>();
-            roles.AddRange(ctx.Member.Roles.ToArray());
-            for (int i = 0; i < roles.Count; i++)
-                if (roles[i].Name != "@everyone")
-                    await ctx.Member.RevokeRoleAsync(roles[i]);
-            await ctx.Member.GrantRoleAsync(role);
-            await ctx.RespondAsync($"Теперь ты {role.Name}!");
-        }
-        /// <summary>
-        /// чекает, на последнем курсе ли студент
-        /// </summary>
-        /// <remarks>to do: на данный момент мне в падлу вменяемым образом передавать сюда откуда бы то ни было параметры</remarks>
-        private bool CheckGraduate(CommandContext ctx)
-        {
-            var gradGroups = new List<string>() { "6511", "6512", "6513", "6514" };
-            var roles = ctx.Member.Roles;
-            return roles.Select(x => x.Name).Intersect(gradGroups).Any();
-        }
+
         #endregion
 
         #region !giiib schedule
         [Command("schedule"), Description("Выдает ссылку на расписание группы студента в соответствии с его группой")]
         public async Task ShowSchedule(CommandContext ctx)
         {
-            var role = GetRole(ctx);
+            var role = RoleUtils.GetRole(ctx);
             if (role != null)
-                await FindSchedule(ctx, role.Name);
+            {
+                var result = DataUtils.FindSchedule(role.Name);
+                if(!string.IsNullOrEmpty(result))
+                    await ctx.RespondAsync(result);
+                else
+                    await ctx.RespondAsync($"Для группы {role.Name} расписания не нашлось");
+
+            }
             else
                 await ctx.RespondAsync("Назови себя нормально! Никнейм должен быть вида *ФИО НомерГруппы*");
         }
-        /// <summary>
-        /// возвращает ссылки на расписание из захардкоженного json-а, что довольно паршиво - его (скорее всего) придется менять раз в год
-        /// </summary>
-        /// <remarks>to do: выяснить, если ли у помойки под названием ssau.ru какое-нибудь api для получения ссылки на расписание запросом</remarks>
-        private async Task FindSchedule(CommandContext ctx, string roleName)
-        {
-            using var fs = File.OpenRead("schedule.json");
-            using var sr = new StreamReader(fs, new UTF8Encoding(false));
-            var json = await sr.ReadToEndAsync();
-            var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-            if (dict.ContainsKey(roleName))
-                await ctx.RespondAsync(dict[roleName]);
-            else
-                await ctx.RespondAsync($"Для группы {roleName} расписания не нашлось");
-        }
+
         #endregion
 
         #region !giiib links
