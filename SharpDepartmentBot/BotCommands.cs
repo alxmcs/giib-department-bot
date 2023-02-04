@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.Entities;
-using Newtonsoft.Json;
 
 namespace SharpDepartmentBot
 {
@@ -59,19 +52,7 @@ namespace SharpDepartmentBot
 
         #region !giiib links
         [Command("links"), Description("Выдает ссылки на информационные ресурсы кафедры")]
-        public async Task ShowLinks(CommandContext ctx)
-        {
-            using var fs = File.OpenRead("links.json");
-            using var sr = new StreamReader(fs, Encoding.GetEncoding(1251));
-            var json = await sr.ReadToEndAsync();
-            var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-            var message = "Информационные ресурсы кафедры ГИиИБ:\n";
-            foreach (var k in dict.Keys)
-            {
-                message +=$"{k}\n<{dict[k]}>\n";
-            }
-            await ctx.RespondAsync(message);
-        }
+        public async Task ShowLinks(CommandContext ctx) => await ctx.RespondAsync(DataUtils.FindLinks());
         #endregion
     }
 }

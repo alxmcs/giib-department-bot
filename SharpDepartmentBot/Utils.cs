@@ -2,10 +2,10 @@
 using DSharpPlus.Entities;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SharpDepartmentBot
 {
@@ -21,6 +21,19 @@ namespace SharpDepartmentBot
                 return dict[roleName];
             else
                 return string.Empty;
+        }
+        public static string FindLinks()
+        {
+            using var fs = File.OpenRead("links.json");
+            using var sr = new StreamReader(fs, Encoding.GetEncoding(1251));
+            var json = sr.ReadToEnd();
+            var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+            var message = "Информационные ресурсы кафедры ГИиИБ:\n";
+            foreach (var k in dict.Keys)
+            {
+                message += $"{k}\n<{dict[k]}>\n";
+            }
+            return message;
         }
     }
     public static class RoleUtils
