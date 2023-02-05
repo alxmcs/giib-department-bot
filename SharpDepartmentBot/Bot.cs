@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
@@ -8,23 +7,14 @@ using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System.Linq;
-
+using Microsoft.Extensions.Configuration;
+using SharpDepartmentBot.Commands;
 /// <summary>
 /// в основном все украдено отсюда https://github.com/DSharpPlus/Example-Bots.git
 /// </summary>
 namespace SharpDepartmentBot
 {
-    public struct Configuration
-    {
-        [JsonProperty("token")]
-        public string Token { get; private set; }
-
-        [JsonProperty("prefix")]
-        public string CommandPrefix { get; private set; }
-    }
-
     public class Bot
     {
         public readonly EventId BotEventId = new(359, "GISandITSecDepartmentBot");
@@ -37,36 +27,26 @@ namespace SharpDepartmentBot
         }
         public async Task RunBotAsync()
         {
+            var configuration = new ConfigurationBuilder().AddJsonFile("config.json").Build();
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            #region Loading configuration
-            var json = "";
-            using var fs = File.OpenRead("config.json");
-            using var sr = new StreamReader(fs, new UTF8Encoding(false));
-            json = await sr.ReadToEndAsync();
-            var cfgjson = JsonConvert.DeserializeObject<Configuration>(json);
             var cfg = new DiscordConfiguration
             {
-                Token = cfgjson.Token,
+                Token = configuration["Token"],
                 TokenType = TokenType.Bot,
                 Intents = DiscordIntents.GuildMembers | DiscordIntents.Guilds | DiscordIntents.GuildMessages,
                 AutoReconnect = true,
                 MinimumLogLevel = LogLevel.Debug,
             };
-            #endregion
 
-            #region Setting up a client
-            this.Client = new DiscordClient(cfg);
-            #region Setting up event handlers
-            this.Client.Ready += this.Client_Ready;
-            this.Client.GuildAvailable += this.Client_GuildAvailable;
-            this.Client.ClientErrored += this.Client_ClientError;
-            this.Client.GuildMemberAdded += this.Client_GuildMemberAdded;
-            #endregion
+            Client = new DiscordClient(cfg);
+            Client.Ready += Client_Ready;
+            Client.GuildAvailable += Client_GuildAvailable;
+            Client.ClientErrored += Client_ClientError;
+            Client.GuildMemberAdded += Client_GuildMemberAdded;
 
-            #region Setting up commands
             var commandsConfig = new CommandsNextConfiguration
             {
-                StringPrefixes = new[] { cfgjson.CommandPrefix },
+                StringPrefixes = new[] { configuration["Prefix"] },
                 EnableDms = false,
                 EnableMentionPrefix = true
             };
@@ -74,9 +54,8 @@ namespace SharpDepartmentBot
             Commands.CommandExecuted += Commands_CommandExecuted;
             Commands.CommandErrored += Commands_CommandErrored;
             Commands.RegisterCommands<BotCommands>();
-            #endregion
-            #endregion
-            await this.Client.ConnectAsync();
+
+            await Client.ConnectAsync();
             await Task.Delay(-1);
         }
         private Task Client_Ready(DiscordClient sender, ReadyEventArgs e)
@@ -101,12 +80,14 @@ namespace SharpDepartmentBot
         }
         private Task Commands_CommandExecuted(CommandsNextExtension sender, CommandExecutionEventArgs e)
         {
-            e.Context.Client.Logger.LogInformation(BotEventId, $"{e.Context.User.Username} successfully executed '{e.Command.QualifiedName}'");
+            var message = $"{e.Context.User.Username} successfully executed '{e.Command.QualifiedName}'";
+            e.Context.Client.Logger.LogInformation(BotEventId, message);
             return Task.CompletedTask;
         }
         private async Task Commands_CommandErrored(CommandsNextExtension sender, CommandErrorEventArgs e)
         {
-            e.Context.Client.Logger.LogError(BotEventId, $"{e.Context.User.Username} tried executing '{e.Command?.QualifiedName ?? "<unknown command>"}' but it errored: {e.Exception.GetType()}: {e.Exception.Message ?? "<no message>"}", DateTime.Now);
+            var message = $"{e.Context.User.Username} tried executing '{e.Command?.QualifiedName ?? "<unknown command>"}' but it errored: {e.Exception.GetType()}: {e.Exception.Message ?? "<no message>"}";
+            e.Context.Client.Logger.LogError(BotEventId, message, DateTime.Now);
 
             if (e.Exception is ChecksFailedException)
             {

@@ -1,4 +1,5 @@
 {
-  "token": "",
-  "prefix": "!giiib"
+  "Token": "",
+  "Prefix": "!giiib",
+  "Database": "Data Source=info.db"
 }

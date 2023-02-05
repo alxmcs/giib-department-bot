@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30104.148
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpDepartmentBot", "SharpDepartmentBot\SharpDepartmentBot.csproj", "{D8F589BD-3307-43B4-B297-FC85739803A1}"
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PythonDepartmentBot", "PythonDepartmentBot\PythonDepartmentBot.pyproj", "{2995FAFB-67A5-4738-BE39-A4BA2AE63C66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpDepartmentBot.Tests", "SharpDepartmentBot.Tests\SharpDepartmentBot.Tests.csproj", "{BE743DAB-21DE-49DC-99D7-8470DF0F071A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,6 +21,10 @@ Global
 		{D8F589BD-3307-43B4-B297-FC85739803A1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2995FAFB-67A5-4738-BE39-A4BA2AE63C66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2995FAFB-67A5-4738-BE39-A4BA2AE63C66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE743DAB-21DE-49DC-99D7-8470DF0F071A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE743DAB-21DE-49DC-99D7-8470DF0F071A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE743DAB-21DE-49DC-99D7-8470DF0F071A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE743DAB-21DE-49DC-99D7-8470DF0F071A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
