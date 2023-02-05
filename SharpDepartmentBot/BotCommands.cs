@@ -8,7 +8,7 @@ namespace SharpDepartmentBot.Commands
     public class BotCommands : BaseCommandModule
     {
         [Command("role"), Description("Присваивает роль студенту в соответствии с его никнеймом")]
-        public static async Task GrantRole(CommandContext ctx)
+        public async Task GrantRole(CommandContext ctx)
         {
             var role = RoleUtils.GetRole(ctx);
             if (role != null)
@@ -18,7 +18,7 @@ namespace SharpDepartmentBot.Commands
         }
 
         [Command("graduate"), Description("Присваивает студенту последнего курса роль выпускника")]
-        public static async Task GrantGraduate(CommandContext ctx)
+        public async Task GrantGraduate(CommandContext ctx)
         {
             if (RoleUtils.CheckGraduate(ctx))
                 await RoleUtils.ApplyGraduateChanges(ctx);
@@ -27,7 +27,7 @@ namespace SharpDepartmentBot.Commands
         }
 
         [Command("schedule"), Description("Выдает ссылку на расписание группы студента в соответствии с его группой")]
-        public static async Task ShowSchedule(CommandContext ctx)
+        public async Task ShowSchedule(CommandContext ctx)
         {
             var role = RoleUtils.GetRole(ctx);
             if (role != null)
@@ -43,6 +43,6 @@ namespace SharpDepartmentBot.Commands
         }
 
         [Command("links"), Description("Выдает ссылки на информационные ресурсы кафедры")]
-        public static async Task ShowLinks(CommandContext ctx) => await ctx.RespondAsync(DataUtils.FindLinks());
+        public async Task ShowLinks(CommandContext ctx) => await ctx.RespondAsync(DataUtils.FindLinks());
     }
 }

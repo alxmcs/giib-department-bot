@@ -33,9 +33,9 @@ public class Bot
         {
             Token = configuration["Token"],
             TokenType = TokenType.Bot,
-            Intents = DiscordIntents.GuildMembers | DiscordIntents.Guilds | DiscordIntents.GuildMessages,
+            Intents = DiscordIntents.All,
             AutoReconnect = true,
-            MinimumLogLevel = LogLevel.Debug,
+            MinimumLogLevel = LogLevel.Debug
         };
 
         Client = new DiscordClient(cfg);
