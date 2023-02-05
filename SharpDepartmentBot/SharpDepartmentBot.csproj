@@ -21,9 +21,6 @@
     <None Update="info.db">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="links.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="schedule.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

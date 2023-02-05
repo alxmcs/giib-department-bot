@@ -6,7 +6,7 @@ using System.Linq;
 using Microsoft.Extensions.Configuration;
 using System.Data.SQLite;
 
-namespace SharpDepartmentBot
+namespace SharpDepartmentBot.Utils
 {
     public static class DataUtils
     {
@@ -17,13 +17,16 @@ namespace SharpDepartmentBot
         public static string FindSchedule(string roleName)
         {
             var schedule = string.Empty;
-            using var con = new SQLiteConnection(_ConnectionString);
-            con.Open();
-            using var cmd = new SQLiteCommand(_GetSchedule, con);
-            cmd.Parameters.AddWithValue("@group", int.Parse(roleName));
-            using var rd = cmd.ExecuteReader();
-            while (rd.Read())
-                schedule = rd.GetString(0);
+            if (roleName != null && !string.IsNullOrEmpty(roleName))
+            {
+                using var con = new SQLiteConnection(_ConnectionString);
+                con.Open();
+                using var cmd = new SQLiteCommand(_GetSchedule, con);
+                cmd.Parameters.AddWithValue("@group", int.Parse(roleName));
+                using var rd = cmd.ExecuteReader();
+                while (rd.Read())
+                    schedule = rd.GetString(0);
+            }
             return schedule;
         }
         public static string FindLinks()

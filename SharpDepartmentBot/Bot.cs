@@ -9,7 +9,7 @@ using DSharpPlus.EventArgs;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
-
+using SharpDepartmentBot.Commands;
 /// <summary>
 /// в основном все украдено отсюда https://github.com/DSharpPlus/Example-Bots.git
 /// </summary>

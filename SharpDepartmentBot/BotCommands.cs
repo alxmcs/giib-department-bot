@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
+using SharpDepartmentBot.Utils;
 
-namespace SharpDepartmentBot
+namespace SharpDepartmentBot.Commands
 {
     public class BotCommands : BaseCommandModule
     {
