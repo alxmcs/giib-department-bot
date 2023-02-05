@@ -5,7 +5,6 @@ namespace SharpDepartmentBot.Tests
         private DatabaseFixture _Fixture;
         public DataUtilsFacts(DatabaseFixture fixture) => _Fixture = fixture;
 
-
         [Theory]
         [InlineData("1111", "TestUrl1")]
         [InlineData("1112", "TestUrl2")]
