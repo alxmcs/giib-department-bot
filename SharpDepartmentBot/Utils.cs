@@ -84,7 +84,5 @@ namespace SharpDepartmentBot.Utils
             await ctx.Member.GrantRoleAsync(role);
             await ctx.RespondAsync($"Теперь ты {role.Name}!");
         }
-
-
     }
 }

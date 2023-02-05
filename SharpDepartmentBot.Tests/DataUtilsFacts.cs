@@ -32,7 +32,6 @@ namespace SharpDepartmentBot.Tests
                 insertScheduleCmd.Parameters.AddWithValue("@secondUrl", "TestUrl2");
                 insertScheduleCmd.ExecuteNonQuery();
             }
-
         }
         public void SetupRescources()
         {

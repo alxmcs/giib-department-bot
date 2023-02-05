@@ -37,7 +37,6 @@ namespace SharpDepartmentBot.Commands
                     await ctx.RespondAsync(result);
                 else
                     await ctx.RespondAsync($"Для группы {role.Name} расписания не нашлось");
-
             }
             else
                 await ctx.RespondAsync("Назови себя нормально! Никнейм должен быть вида *ФИО НомерГруппы*");
