@@ -3,10 +3,8 @@ namespace SharpDepartmentBot.Tests
     public class DataUtilsFacts : IClassFixture<DatabaseFixture>
     {
         private DatabaseFixture _Fixture;
-        public DataUtilsFacts(DatabaseFixture fixture)
-        {
-            _Fixture = fixture;
-        }
+        public DataUtilsFacts(DatabaseFixture fixture) => _Fixture = fixture;
+
 
         [Theory]
         [InlineData("1111", "TestUrl1")]
