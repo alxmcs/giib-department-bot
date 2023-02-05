@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
@@ -8,23 +7,14 @@ using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 /// <summary>
 /// в основном все украдено отсюда https://github.com/DSharpPlus/Example-Bots.git
 /// </summary>
 namespace SharpDepartmentBot
 {
-    public struct Configuration
-    {
-        [JsonProperty("token")]
-        public string Token { get; private set; }
-
-        [JsonProperty("prefix")]
-        public string CommandPrefix { get; private set; }
-    }
-
     public class Bot
     {
         public readonly EventId BotEventId = new(359, "GISandITSecDepartmentBot");
@@ -37,15 +27,11 @@ namespace SharpDepartmentBot
         }
         public async Task RunBotAsync()
         {
+            var configuration = new ConfigurationBuilder().AddJsonFile("config.json").Build();
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            var json = "";
-            using var fs = File.OpenRead("config.json");
-            using var sr = new StreamReader(fs, new UTF8Encoding(false));
-            json = await sr.ReadToEndAsync();
-            var cfgjson = JsonConvert.DeserializeObject<Configuration>(json);
             var cfg = new DiscordConfiguration
             {
-                Token = cfgjson.Token,
+                Token = configuration["Token"],
                 TokenType = TokenType.Bot,
                 Intents = DiscordIntents.GuildMembers | DiscordIntents.Guilds | DiscordIntents.GuildMessages,
                 AutoReconnect = true,
@@ -60,7 +46,7 @@ namespace SharpDepartmentBot
 
             var commandsConfig = new CommandsNextConfiguration
             {
-                StringPrefixes = new[] { cfgjson.CommandPrefix },
+                StringPrefixes = new[] { configuration["Prefix"] },
                 EnableDms = false,
                 EnableMentionPrefix = true
             };

@@ -6,7 +6,6 @@ namespace SharpDepartmentBot
 {
     public class BotCommands : BaseCommandModule
     {
-        #region !giiib role
         [Command("role"), Description("Присваивает роль студенту в соответствии с его никнеймом")]
         public async Task GrantRole(CommandContext ctx)
         {
@@ -16,9 +15,7 @@ namespace SharpDepartmentBot
             else
                 await ctx.RespondAsync("Назови себя нормально! Никнейм должен быть вида *ФИО НомерГруппы*");
         }
-        #endregion
 
-        #region !giiib graduate
         [Command("graduate"), Description("Присваивает студенту последнего курса роль выпускника")]
         public async Task GrantGraduate(CommandContext ctx)
         {
@@ -28,9 +25,6 @@ namespace SharpDepartmentBot
                 await ctx.RespondAsync("Ты не на последнем курсе!");
         }
 
-        #endregion
-
-        #region !giiib schedule
         [Command("schedule"), Description("Выдает ссылку на расписание группы студента в соответствии с его группой")]
         public async Task ShowSchedule(CommandContext ctx)
         {
@@ -48,11 +42,7 @@ namespace SharpDepartmentBot
                 await ctx.RespondAsync("Назови себя нормально! Никнейм должен быть вида *ФИО НомерГруппы*");
         }
 
-        #endregion
-
-        #region !giiib links
         [Command("links"), Description("Выдает ссылки на информационные ресурсы кафедры")]
         public async Task ShowLinks(CommandContext ctx) => await ctx.RespondAsync(DataUtils.FindLinks());
-        #endregion
     }
 }

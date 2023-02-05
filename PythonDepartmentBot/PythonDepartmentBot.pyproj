@@ -23,6 +23,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Bot.py" />
+    <Compile Include="Tests\test_data_utils.py" />
+    <Compile Include="Tests\test_role_utils.py" />
+    <Compile Include="Tests\__init__.py" />
+    <Compile Include="utils.py" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="venv\">
@@ -39,13 +43,13 @@
     <Content Include="config.json">
       <Publish>True</Publish>
     </Content>
-    <Content Include="links.json">
-      <Publish>True</Publish>
-    </Content>
+    <Content Include="Dockerfile" />
+    <Content Include="info.db" />
     <Content Include="requirements.txt" />
-    <Content Include="schedule.json">
-      <Publish>True</Publish>
-    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tests\" />
+    <Folder Include="Tests\__pycache__\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

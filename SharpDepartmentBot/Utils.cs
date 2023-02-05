@@ -1,39 +1,41 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.IO;
 using System.Linq;
-using System.Text;
+using Microsoft.Extensions.Configuration;
+using System.Data.SQLite;
 
 namespace SharpDepartmentBot
 {
     public static class DataUtils
     {
+        private static readonly string _ConnectionString = new ConfigurationBuilder().AddJsonFile("config.json").Build()["Database"];
+        private static readonly string _GetSchedule = "SELECT \"Url\" FROM \"Schedule\" WHERE \"Group\"=@group LIMIT 1";
+        private static readonly string _GetLinks = "SELECT \"Name\", \"Url\" FROM \"Resources\"";
+
         public static string FindSchedule(string roleName)
         {
-            using var fs = File.OpenRead("schedule.json");
-            using var sr = new StreamReader(fs, new UTF8Encoding(false));
-            var json = sr.ReadToEnd();
-            var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-            if (dict.ContainsKey(roleName))
-                return dict[roleName];
-            else
-                return string.Empty;
+            var schedule = string.Empty;
+            using var con = new SQLiteConnection(_ConnectionString);
+            con.Open();
+            using var cmd = new SQLiteCommand(_GetSchedule, con);
+            cmd.Parameters.AddWithValue("@group", int.Parse(roleName));
+            using var rd = cmd.ExecuteReader();
+            while (rd.Read())
+                schedule = rd.GetString(0);
+            return schedule;
         }
         public static string FindLinks()
         {
-            using var fs = File.OpenRead("links.json");
-            using var sr = new StreamReader(fs, Encoding.GetEncoding(1251));
-            var json = sr.ReadToEnd();
-            var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-            var message = "Информационные ресурсы кафедры ГИиИБ:\n";
-            foreach (var k in dict.Keys)
-            {
-                message += $"{k}\n<{dict[k]}>\n";
-            }
-            return message;
+            var links = string.Empty;
+            using var con = new SQLiteConnection(_ConnectionString);
+            con.Open();
+            using var cmd = new SQLiteCommand(_GetLinks, con);
+            using var rd = cmd.ExecuteReader();
+            while (rd.Read())
+                links += $"{rd.GetString(0)}\n<{rd.GetString(1)}>\n";
+            return links;
         }
     }
     public static class RoleUtils
