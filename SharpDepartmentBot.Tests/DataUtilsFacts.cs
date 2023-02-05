@@ -64,28 +64,35 @@ namespace SharpDepartmentBot.Tests
             _Fixture = fixture;
         }
 
-        [Fact]
-        public void FindScheduleFact()
+        [Theory]
+        [InlineData("1111", "TestUrl1")]
+        [InlineData("1112", "TestUrl2")]
+        public void FindScheduleTheorySuccsess(string roleName, string expected)
         {
             _Fixture.SetupShedule();
-            var result = DataUtils.FindSchedule("1111");
+            var result = DataUtils.FindSchedule(roleName);
             Assert.NotNull(result);
             Assert.False(string.IsNullOrEmpty(result));
-            Assert.Equal("TestUrl1", result);
-            result = DataUtils.FindSchedule("1112");
-            Assert.NotNull(result);
-            Assert.False(string.IsNullOrEmpty(result));
-            Assert.Equal("TestUrl2", result);
-            result = DataUtils.FindSchedule("1113");
-            Assert.NotNull(result);
-            Assert.True(string.IsNullOrEmpty(result));
-            result = DataUtils.FindSchedule(string.Empty);
+            Assert.Equal(expected, result);
+        }
+
+        [Theory]
+        [InlineData("1113")]
+        [InlineData("")]
+        public void FindScheduleTheoryFailure(string roleName)
+        {
+            _Fixture.SetupShedule();
+            var result = DataUtils.FindSchedule(roleName);
             Assert.NotNull(result);
             Assert.True(string.IsNullOrEmpty(result));
         }
 
-        [Fact]
-        public void FindLinksFact()
+        [Theory]
+        [InlineData(0, "TestName1")]
+        [InlineData(1, "TestUrl1")]
+        [InlineData(2, "TestName2")]
+        [InlineData(3, "TestUrl2")]
+        public void FindLinksTheory(int index, string expexted)
         {
             _Fixture.SetupRescources();
             var result = DataUtils.FindLinks();
@@ -94,18 +101,9 @@ namespace SharpDepartmentBot.Tests
             var items = result.Replace("\n", "").Replace("<", " ").Replace(">", " ").Trim().Split(" ");
             Assert.NotNull(items);
             Assert.Equal(4, items.Length);
-            Assert.NotNull(items[0]);
-            Assert.False(string.IsNullOrEmpty(items[0]));
-            Assert.Equal("TestName1", items[0]);
-            Assert.NotNull(items[1]);
-            Assert.False(string.IsNullOrEmpty(items[0]));
-            Assert.Equal("TestUrl1", items[1]);
-            Assert.NotNull(items[2]);
-            Assert.False(string.IsNullOrEmpty(items[2]));
-            Assert.Equal("TestName2", items[2]);
-            Assert.NotNull(items[3]);
-            Assert.False(string.IsNullOrEmpty(items[3]));
-            Assert.Equal("TestUrl2", items[3]);
+            Assert.NotNull(items[index]);
+            Assert.False(string.IsNullOrEmpty(items[index]));
+            Assert.Equal(expexted, items[index]);
         }
     }
 }
