@@ -1,5 +1,5 @@
-﻿using System.Data.SQLite;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using System.Data.SQLite;
 
 namespace SharpDepartmentBot.Utils;
 
@@ -32,7 +32,7 @@ public static class DataUtils
         using var cmd = new SQLiteCommand(_GetLinks, con);
         using var rd = cmd.ExecuteReader();
         while (rd.Read())
-            links += $"{rd.GetString(0)}\n<{rd.GetString(1)}>\n";
+            links += $"[{rd.GetString(0)}](<{rd.GetString(1)}>)\n";
         return links;
     }
 }

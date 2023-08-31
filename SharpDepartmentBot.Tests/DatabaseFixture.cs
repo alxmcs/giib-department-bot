@@ -2,7 +2,7 @@ using System.Data.SQLite;
 
 namespace SharpDepartmentBot.Tests;
 
-public class DatabaseFixture: IDisposable
+public class DatabaseFixture : IDisposable
 {
     private readonly SQLiteConnection _Connection;
     private static readonly string _CreateSchedule = "CREATE TABLE IF NOT EXISTS \"Schedule\" (\"Id\" INTEGER NOT NULL UNIQUE,\"Group\" INTEGER,\"Url\"\tTEXT,PRIMARY KEY(\"Id\" AUTOINCREMENT));";

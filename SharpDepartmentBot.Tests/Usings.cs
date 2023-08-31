@@ -1,2 +1,2 @@
-global using Xunit;
 global using SharpDepartmentBot.Utils;
+global using Xunit;

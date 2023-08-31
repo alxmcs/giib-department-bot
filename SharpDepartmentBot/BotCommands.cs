@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
-using DSharpPlus.CommandsNext;
+﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using SharpDepartmentBot.Utils;
+using System.Threading.Tasks;
 
 namespace SharpDepartmentBot.Commands
 {
@@ -33,7 +33,7 @@ namespace SharpDepartmentBot.Commands
             if (role != null)
             {
                 var result = DataUtils.FindSchedule(role.Name);
-                if(!string.IsNullOrEmpty(result))
+                if (!string.IsNullOrEmpty(result))
                     await ctx.RespondAsync(result);
                 else
                     await ctx.RespondAsync($"Для группы {role.Name} расписания не нашлось");

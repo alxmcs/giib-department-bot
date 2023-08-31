@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "SharpDepartmentBot": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
