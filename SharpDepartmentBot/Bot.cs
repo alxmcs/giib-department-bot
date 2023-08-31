@@ -1,15 +1,15 @@
-﻿using System;
-using System.Text;
-using System.Linq;
-using System.Threading.Tasks;
-using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
+﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Exceptions;
-using Microsoft.Extensions.Logging;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using SharpDepartmentBot.Commands;
+using System;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 /// <summary>
 /// в основном все украдено отсюда https://github.com/DSharpPlus/Example-Bots.git
 /// </summary>

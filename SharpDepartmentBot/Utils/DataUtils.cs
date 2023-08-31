@@ -1,5 +1,5 @@
-﻿using System.Data.SQLite;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using System.Data.SQLite;
 
 namespace SharpDepartmentBot.Utils;
 

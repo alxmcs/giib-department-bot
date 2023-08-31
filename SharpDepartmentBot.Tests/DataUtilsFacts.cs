@@ -1,5 +1,5 @@
 namespace SharpDepartmentBot.Tests
-{ 
+{
     public class DataUtilsFacts : IClassFixture<DatabaseFixture>
     {
         private DatabaseFixture _Fixture;
