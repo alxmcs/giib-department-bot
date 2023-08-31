@@ -39,7 +39,7 @@ namespace SharpDepartmentBot.Tests
             var result = DataUtils.FindLinks();
             Assert.NotNull(result);
             Assert.False(string.IsNullOrEmpty(result));
-            var items = result.Replace("\n", "").Replace("<", " ").Replace(">", " ").Trim().Split(" ");
+            var items = result.Replace("\n", " ").Replace("<", "").Replace(">", "").Replace(")", "").Replace("(", "").Replace("]", " ").Replace("[", "").Trim().Split(" ");
             Assert.NotNull(items);
             Assert.Equal(4, items.Length);
             Assert.NotNull(items[index]);
