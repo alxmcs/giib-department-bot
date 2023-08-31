@@ -3,12 +3,7 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["SharpDepartmentBot.csproj", "SharpDepartmentBot/"]
-COPY ["Bot.cs", "SharpDepartmentBot/"]
-COPY ["BotCommands.cs", "SharpDepartmentBot/"]
-COPY ["config.json", "SharpDepartmentBot/"]
-COPY ["info.db", "SharpDepartmentBot/"]
-COPY ["Utils", "SharpDepartmentBot/"]
+COPY ["SharpDepartmentBot/SharpDepartmentBot.csproj", "SharpDepartmentBot/"]
 RUN dotnet restore "SharpDepartmentBot/SharpDepartmentBot.csproj"
 COPY . .
 WORKDIR "/src/SharpDepartmentBot"
