@@ -1,17 +1,25 @@
+using System.Text.RegularExpressions;
+
 namespace SharpDepartmentBot.Tests
 {
     public class DataUtilsFacts : IClassFixture<DatabaseFixture>
     {
-        private DatabaseFixture _Fixture;
-        public DataUtilsFacts(DatabaseFixture fixture) => _Fixture = fixture;
+        private readonly DatabaseFixture _fixture;
+        private readonly DataUtils _dataUtils;
+
+        public DataUtilsFacts(DatabaseFixture fixture)
+        {
+            _fixture = fixture;
+            _dataUtils = new DataUtils(DatabaseFixture.ConnectionString);
+        }
 
         [Theory]
         [InlineData("1111", "TestUrl1")]
         [InlineData("1112", "TestUrl2")]
         public void FindScheduleTheorySuccsess(string roleName, string expected)
         {
-            _Fixture.SetupShedule();
-            var result = DataUtils.FindSchedule(roleName);
+            _fixture.SetupShedule();
+            var result = _dataUtils.FindSchedule(roleName);
             Assert.NotNull(result);
             Assert.False(string.IsNullOrEmpty(result));
             Assert.Equal(expected, result);
@@ -20,31 +28,38 @@ namespace SharpDepartmentBot.Tests
         [Theory]
         [InlineData("1113")]
         [InlineData("")]
+        [InlineData("not-a-number")]
         public void FindScheduleTheoryFailure(string roleName)
         {
-            _Fixture.SetupShedule();
-            var result = DataUtils.FindSchedule(roleName);
+            _fixture.SetupShedule();
+            var result = _dataUtils.FindSchedule(roleName);
             Assert.NotNull(result);
             Assert.True(string.IsNullOrEmpty(result));
         }
 
-        [Theory]
-        [InlineData(0, "TestName1")]
-        [InlineData(1, "TestUrl1")]
-        [InlineData(2, "TestName2")]
-        [InlineData(3, "TestUrl2")]
-        public void FindLinksTheory(int index, string expexted)
+        [Fact]
+        public void FindLinksReturnsAllResourcesInMarkdownFormat()
         {
-            _Fixture.SetupRescources();
-            var result = DataUtils.FindLinks();
+            _fixture.SetupRescources();
+            _dataUtils.InvalidateCache();
+            var result = _dataUtils.FindLinks();
             Assert.NotNull(result);
             Assert.False(string.IsNullOrEmpty(result));
-            var items = result.Replace("\n", " ").Replace("<", "").Replace(">", "").Replace(")", "").Replace("(", "").Replace("]", " ").Replace("[", "").Trim().Split(" ");
-            Assert.NotNull(items);
-            Assert.Equal(4, items.Length);
-            Assert.NotNull(items[index]);
-            Assert.False(string.IsNullOrEmpty(items[index]));
-            Assert.Equal(expexted, items[index]);
+
+            // Parse the Discord-flavoured markdown: one row per line in the
+            // form "[Name](<Url>)". Asserting against structured output is
+            // far more robust than the previous multi-Replace/Split chain.
+            var rowPattern = new Regex(@"^\[(?<name>[^\]]+)\]\(<(?<url>[^>]+)>\)$");
+            var rows = result.Split('\n', System.StringSplitOptions.RemoveEmptyEntries);
+            Assert.Equal(2, rows.Length);
+
+            var matches = rows.Select(r => rowPattern.Match(r)).ToList();
+            Assert.All(matches, m => Assert.True(m.Success, "Row did not match expected markdown format"));
+
+            Assert.Equal("TestName1", matches[0].Groups["name"].Value);
+            Assert.Equal("TestUrl1", matches[0].Groups["url"].Value);
+            Assert.Equal("TestName2", matches[1].Groups["name"].Value);
+            Assert.Equal("TestUrl2", matches[1].Groups["url"].Value);
         }
     }
 }

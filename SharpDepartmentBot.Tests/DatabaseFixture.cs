@@ -4,6 +4,8 @@ namespace SharpDepartmentBot.Tests;
 
 public class DatabaseFixture : IDisposable
 {
+    public const string ConnectionString = "Data Source=TestDatabase;Mode=Memory;Cache=Shared";
+
     private readonly SQLiteConnection _Connection;
     private static readonly string _CreateSchedule = "CREATE TABLE IF NOT EXISTS \"Schedule\" (\"Id\" INTEGER NOT NULL UNIQUE,\"Group\" INTEGER,\"Url\"\tTEXT,PRIMARY KEY(\"Id\" AUTOINCREMENT));";
     private static readonly string _CreateRescources = "CREATE TABLE IF NOT EXISTS \"Resources\" (\"Id\" INTEGER NOT NULL UNIQUE, \"Name\" TEXT, \"Url\" TEXT,PRIMARY KEY(\"Id\" AUTOINCREMENT));";
@@ -13,7 +15,7 @@ public class DatabaseFixture : IDisposable
     private static readonly string _CountRescources = "SELECT COUNT(1) FROM \"Resources\";";
     public DatabaseFixture()
     {
-        _Connection = new SQLiteConnection("Data Source=TestDatabase;Mode=Memory;Cache=Shared");
+        _Connection = new SQLiteConnection(ConnectionString);
         _Connection.Open();
     }
     public void SetupShedule()

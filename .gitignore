@@ -349,3 +349,10 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# Local bot configuration and runtime SQLite database
+# (committed copies should be replaced with config.example.json templates)
+**/config.json
+!**/config.example.json
+!SharpDepartmentBot.Tests/config.json
+**/info.db

@@ -6,36 +6,72 @@ using System.Threading.Tasks;
 
 namespace SharpDepartmentBot.Utils;
 
-public static class RoleUtils
+/// <summary>
+/// Role-management helpers. Instance-scoped so graduate groups can be supplied
+/// from configuration (matching the Python implementation's single source of
+/// truth) and can be easily replaced in tests.
+/// </summary>
+public class RoleUtils
 {
-    private static readonly List<string> _GradGroups = new List<string>() { "6511", "6512", "6513", "6514" };
-    private const string _GradRole = "Выпускник";
-    private const string _StudentRole = "Студент";
-    private const string _BaseRole = "@everyone";
-    public static DiscordRole GetRole(CommandContext ctx) =>
-        string.IsNullOrEmpty(ctx.Member.Nickname) ?
-            null :
-            ctx.Guild.Roles.FirstOrDefault(x => x.Value.Name == ctx.Member.Nickname.Split(" ").LastOrDefault()).Value;
-    public static bool CheckGraduate(CommandContext ctx) => ctx.Member.Roles.Select(x => x.Name).Intersect(_GradGroups).Any();
+    private const string NicknameErrorMessage = "Назови себя нормально! Никнейм должен быть вида *ФИО НомерГруппы*";
+
+    private readonly HashSet<string> _graduateGroups;
+
+    public RoleUtils(IEnumerable<string> graduateGroups)
+    {
+        _graduateGroups = new HashSet<string>(graduateGroups ?? BotConstants.DefaultGraduateGroups);
+    }
+
+    /// <summary>
+    /// Resolves the guild role matching the last whitespace-separated token of
+    /// the member's nickname. Returns <c>null</c> when the member has no
+    /// nickname or when no matching role exists.
+    /// </summary>
+    public static DiscordRole GetRole(CommandContext ctx)
+    {
+        if (ctx?.Member == null || string.IsNullOrEmpty(ctx.Member.Nickname))
+            return null;
+
+        var groupToken = ctx.Member.Nickname.Split(' ').LastOrDefault();
+        if (string.IsNullOrEmpty(groupToken))
+            return null;
+
+        // Use explicit null-aware lookup instead of FirstOrDefault().Value which
+        // would NRE when the role doesn't exist (KeyValuePair default has a
+        // null Value).
+        return ctx.Guild.Roles.Values.FirstOrDefault(r => r.Name == groupToken);
+    }
+
+    public bool CheckGraduate(CommandContext ctx) =>
+        ctx?.Member != null &&
+        ctx.Member.Roles.Select(x => x.Name).Intersect(_graduateGroups).Any();
+
     public static async Task ApplyRoleChanges(CommandContext ctx, DiscordRole role)
     {
-        var roles = new List<DiscordRole>();
-        roles.AddRange(ctx.Member.Roles.ToArray());
-        for (int i = 0; i < roles.Count; i++)
-            if (roles[i].Name != _StudentRole && roles[i].Name != _BaseRole)
-                await ctx.Member.RevokeRoleAsync(roles[i]);
-        await ctx.Member.GrantRoleAsync(role);
+        // Atomic role replacement — avoids partial state if one of the
+        // individual revoke calls fails mid-loop.
+        var preserved = ctx.Member.Roles
+            .Where(r => r.Name == BotConstants.StudentRole || r.Name == BotConstants.EveryoneRole)
+            .ToList();
+        preserved.Add(role);
+        await ctx.Member.ReplaceRolesAsync(preserved);
         await ctx.RespondAsync($"Теперь ты в группе {role.Name}!");
     }
+
     public static async Task ApplyGraduateChanges(CommandContext ctx)
     {
-        var role = ctx.Guild.Roles.FirstOrDefault(x => x.Value.Name == _GradRole).Value;
-        var roles = new List<DiscordRole>();
-        roles.AddRange(ctx.Member.Roles.ToArray());
-        for (int i = 0; i < roles.Count; i++)
-            if (roles[i].Name != _BaseRole)
-                await ctx.Member.RevokeRoleAsync(roles[i]);
-        await ctx.Member.GrantRoleAsync(role);
+        var role = ctx.Guild.Roles.Values.FirstOrDefault(r => r.Name == BotConstants.GraduateRole);
+        if (role == null)
+        {
+            await ctx.RespondAsync($"На сервере отсутствует роль \"{BotConstants.GraduateRole}\", обратитесь к администратору.");
+            return;
+        }
+
+        // @everyone cannot be removed, so we simply replace all roles with
+        // only the graduate role; Discord preserves @everyone implicitly.
+        await ctx.Member.ReplaceRolesAsync(new[] { role });
         await ctx.RespondAsync($"Теперь ты {role.Name}!");
     }
+
+    internal static string NicknameError => NicknameErrorMessage;
 }
