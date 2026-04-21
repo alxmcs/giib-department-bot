@@ -102,7 +102,7 @@ public class Bot
 
     private Task Client_ClientError(DiscordClient sender, ClientErrorEventArgs e)
     {
-        sender.Logger.LogError(BotEventId, e.Exception, "Exception occured");
+        sender.Logger.LogError(BotEventId, e.Exception, "Exception occurred");
         return Task.CompletedTask;
     }
 

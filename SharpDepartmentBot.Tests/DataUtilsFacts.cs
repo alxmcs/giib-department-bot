@@ -16,7 +16,7 @@ namespace SharpDepartmentBot.Tests
         [Theory]
         [InlineData("1111", "TestUrl1")]
         [InlineData("1112", "TestUrl2")]
-        public void FindScheduleTheorySuccsess(string roleName, string expected)
+        public void FindScheduleTheorySuccess(string roleName, string expected)
         {
             _fixture.SetupShedule();
             var result = _dataUtils.FindSchedule(roleName);

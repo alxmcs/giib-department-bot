@@ -23,7 +23,7 @@ public class BotCommands : BaseCommandModule
         if (role != null)
             await RoleUtils.ApplyRoleChanges(ctx, role);
         else
-            await ctx.RespondAsync("Назови себя нормально! Никнейм должен быть вида *ФИО НомерГруппы*");
+            await ctx.RespondAsync(RoleUtils.NicknameError);
     }
 
     [Command("graduate"), Description("Присваивает студенту последнего курса роль выпускника")]
@@ -48,7 +48,7 @@ public class BotCommands : BaseCommandModule
                 await ctx.RespondAsync($"Для группы {role.Name} расписания не нашлось");
         }
         else
-            await ctx.RespondAsync("Назови себя нормально! Никнейм должен быть вида *ФИО НомерГруппы*");
+            await ctx.RespondAsync(RoleUtils.NicknameError);
     }
 
     [Command("links"), Description("Выдает ссылки на информационные ресурсы кафедры")]

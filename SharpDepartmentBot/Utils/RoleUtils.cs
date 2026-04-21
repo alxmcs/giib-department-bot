@@ -13,7 +13,7 @@ namespace SharpDepartmentBot.Utils;
 /// </summary>
 public class RoleUtils
 {
-    private const string NicknameErrorMessage = "Назови себя нормально! Никнейм должен быть вида *ФИО НомерГруппы*";
+    public const string NicknameError = "Назови себя нормально! Никнейм должен быть вида *ФИО НомерГруппы*";
 
     private readonly HashSet<string> _graduateGroups;
 
@@ -72,6 +72,4 @@ public class RoleUtils
         await ctx.Member.ReplaceRolesAsync(new[] { role });
         await ctx.RespondAsync($"Теперь ты {role.Name}!");
     }
-
-    internal static string NicknameError => NicknameErrorMessage;
 }
